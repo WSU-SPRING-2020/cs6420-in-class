@@ -11,10 +11,10 @@ public class WeightedQuickUF extends QuickUF {
   }
 
   @Override
-  public void union(int p, int q){
+  public boolean union(int p, int q){
     int pRoot = find(p);
     int qRoot = find(q);
-    if (pRoot == qRoot) return;
+    if (pRoot == qRoot) return false;
 
     if(sz[pRoot] < sz[qRoot]){
       id[pRoot] = qRoot;
@@ -25,5 +25,6 @@ public class WeightedQuickUF extends QuickUF {
     }
 
     count--;
+    return true;
   }
 }

@@ -16,30 +16,41 @@ public class App {
   }
 
   public static void main(String[] args) {
-    Scanner in = new Scanner(App.class.getClassLoader().getResourceAsStream("tinyUF.txt"));
-    int n = in.nextInt();
-    Algorithm[] algorithms = { new Algorithm("UF", new UF(n)), new Algorithm("QU", new QuickUF(n)),
-        new Algorithm("WQ", new WeightedQuickUF(n)), new Algorithm("PC", new PCWQuickUF(n)) };
+    String[] inputFiles = { 
+      "tinyUF.txt", 
+      "mediumUF.txt"
+    };
 
-    for (int i = 0; i < algorithms.length; i++) {
-      StopWatch sw = new StopWatch();
-      while (in.hasNext()) {
-        int p = in.nextInt();
-        int q = in.nextInt();
+    StringBuilder report = new StringBuilder();
+    report.append("       Input       N  Algorithm  Components  Time(millisecs)\n");
+    report.append("=".repeat(60) + '\n');
+    for (String inputFile : inputFiles) {
+      Scanner in = new Scanner(App.class.getClassLoader().getResourceAsStream(inputFile));
+      int n = in.nextInt();
+      Algorithm[] algorithms = { 
+        new Algorithm("UF", new UF(n)), 
+        new Algorithm("QU", new QuickUF(n)),
+        new Algorithm("WQ", new WeightedQuickUF(n)), 
+        new Algorithm("PC", new PCWQuickUF(n)) 
+      };
+      in.close();
 
-        if (!algorithms[i].impl.connected(p, q)) {
-          algorithms[i].impl.union(p, q);
+      for (Algorithm a : algorithms) {
+        in = new Scanner(App.class.getClassLoader().getResourceAsStream(inputFile));
+        n = in.nextInt();
+        StopWatch sw = new StopWatch();
+        while (in.hasNext()) {
+          int p = in.nextInt();
+          int q = in.nextInt();
+
+          a.impl.union(p, q);
         }
+        a.runningTime = sw.elapsedTime();
+        in.close();
+        report.append(String.format("%12s %7d %10s %11s %16d\n", inputFile, n, a.name, a.impl.componentsCount(), a.runningTime));
       }
-
-      algorithms[i].runningTime = sw.elapsedTime();
     }
 
-    System.out.printf("Algorithms Components RunningTime\n");
-    for (Algorithm a : algorithms) {
-      System.out.printf("%9s%11s%12d\n", a.name, a.impl.componentsCount(), a.runningTime);
-    }
-
-    in.close();
+    System.out.println(report);
   }
 }

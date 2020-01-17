@@ -7,5 +7,5 @@ public interface UFable {
   }
 
   public int find(int p);
-  public void union(int p, int q);
+  public boolean union(int p, int q);
 }

@@ -16,11 +16,12 @@ public class QuickUF extends UF {
   }
 
   @Override
-  public void union(int p, int q) {
+  public boolean union(int p, int q) {
     int pRoot = find(p);
     int qRoot = find(q);
-    if (pRoot == qRoot) return;
+    if (pRoot == qRoot) return false;
     id[pRoot] = qRoot;
     count--;
+    return true;
   }
 }
